@@ -12,9 +12,10 @@ function ListEpisodes() {
   const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [filterParams, setFilterParams] = useState({});
+  const [selectedEpisode, setSelectedEpisode] = useState(null);
+
   const [trigger, { data, error, isLoading }] = useLazyGetAllEpisodesQuery();
   const testState = useSelector((state) => state.test);
-  const [selectedEpisode, setSelectedEpisode] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -73,9 +74,9 @@ function ListEpisodes() {
         {isLoading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
         {data &&
-          data.results.map((episode, index) => (
+          data.results.map((episode) => (
             <div
-              key={index}
+              key={episode.id}
               className="max-w-sm bg-gray-800 text-white mx-4 my-8 rounded-lg overflow-hidden shadow-lg"
               style={{ maxWidth: "600px", maxHeight: "370px" }}
             >
@@ -97,38 +98,23 @@ function ListEpisodes() {
                       </h2>{" "}
                       <div className="flex gap-2  items-center mt-2">
                         <span>
-                          {episode?.status === "Dead" ? (
-                            <div
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                backgroundColor: "red",
-                                borderRadius: "50%",
-                              }}
-                            ></div>
-                          ) : episode?.status === "Alive" ? (
-                            <div
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                backgroundColor: "green",
-                                borderRadius: "50%",
-                              }}
-                            ></div>
-                          ) : (
-                            <div
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                backgroundColor: "gray",
-                                borderRadius: "50%",
-                              }}
-                            ></div>
-                          )}
+                          <div
+                            style={{
+                              width: "10px",
+                              height: "10px",
+                              backgroundColor:
+                                episode?.status === "Dead"
+                                  ? "red"
+                                  : episode?.status === "Alive"
+                                  ? "green"
+                                  : "gray",
+                              borderRadius: "50%",
+                            }}
+                          ></div>
                         </span>
                         <h3 className="text-sm text-white-700 ">
                           {episode?.status}
-                          {episode?.typ ? <span>-{episode?.type}</span> : null}
+                          {episode?.typ && <span>-{episode?.type}</span>}
                         </h3>
                       </div>
                       <p className="mt-2 text-l text-gray-500 hover:text-orange-700 font-normal">
